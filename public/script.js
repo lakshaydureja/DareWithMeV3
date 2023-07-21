@@ -1,5 +1,6 @@
 
-
+//const site = "http://localhost:3030";
+const site = "https://darewithmetest.onrender.com";
 //? Random Functions
 function random1() {
   //*Code For More than 2 player functionality
@@ -19,7 +20,7 @@ function random1() {
     // var text = document.getElementById('content1');
     // text.textContent = "Select number of players";
 
-    const roomUrl = `http://localhost:3030/random/playzone`;
+    const roomUrl = `${site}/random/playzone`;
     window.location.href = roomUrl;
 
 
@@ -82,7 +83,7 @@ function createroom(){
 
 // going to server
 
-fetch('http://localhost:3030/createroom', {
+fetch(`${site}/createroom`, {
   method: 'POST',
  
 })
@@ -134,7 +135,7 @@ roomcode.remove();
 }
 
 function sendJoinRoomReq(roomCode) {
-  fetch('http://localhost:3030/checkRoomCode', {
+  fetch(`${site}/checkRoomCode`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -145,11 +146,11 @@ function sendJoinRoomReq(roomCode) {
     .then(data => {
       if (data.exists) {
         
-        const roomUrl = `http://localhost:3030/${roomCode}`;
+        const roomUrl = `${site}${roomCode}`;
   window.location.href = roomUrl;
         console.log('Room code exists on the server');
       } else {
-        const roomUrl2 = `http://localhost:3030/404`;
+        const roomUrl2 = `${site}/404`;
         window.location.href = roomUrl2;
         
         console.log('Room code does not exist on the server');

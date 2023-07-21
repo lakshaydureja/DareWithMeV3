@@ -1,3 +1,6 @@
+//const site = "http://localhost:3030";
+const site = "https://darewithmetest.onrender.com";
+
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
@@ -84,7 +87,7 @@ app.post('/createroom', (req, res) => {
    // Store the room code in the array
    roomCodes.push(randomNumber);
     // Create the room URL using the random number
-    const roomUrl = `http://localhost:3030/${randomNumber}`;
+    const roomUrl = `${site}/${randomNumber}`;
     const creator = "yes";
   console.log(roomUrl);
     // Redirect the user to the room URL
