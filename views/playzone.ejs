@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dare With Me</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">   
+     <link rel="stylesheet" href="playstyle.css" />
+    <!-- <script src="/socket.io/socket.io.js" ></script> -->
+    <!-- <script src="https://kit.fontawesome.com/c939d0e917.js"></script> -->
+    <!-- <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js" ></script> -->
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Fredoka:wght@500&family=Lilita+One&family=Montserrat:wght@500&family=Pacifico&family=Permanent+Marker&display=swap"
+        rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    <div class="nav">
+
+        <button class="btn_red_sliding3 nav_btns" id="home">Home</button>
+        <button class="btn_red_sliding3 nav_btns" id="rules">Rules</button>
+        <button class="btn_red_sliding3 nav_btns" id="aboutus">About Us</button>
+        <button class="btn_red_sliding3 nav_btns" id="share">Share</button>
+    </div>
+    <div class="leftband">
+        <h1 id="chat">Chat</h1>
+<div class="messagebox">
+
+
+    <div class="message-screen">
+        <ul id="message-list"></ul>
+      </div>
+
+
+
+
+
+    <div class="sendmsg">
+    <input type="text" class="msg" id="msg" placeholder="Enter Message">
+    <i class="uil uil-message send-button" id="send-button"></i>
+   
+</div>
+</div>
+
+
+    </div>
+    <div class="rightband">
+  
+<h3 class="codenum">RoomCode:</h3><h3 id="codenum" class="codenum"><%= roomNumber %></h3>
+
+<!-- vid 1 -->
+<video id="localVideo" class="video turn" muted="muted" autoplay></video>
+
+
+
+        <div class="circle"></div>
+        <img src="/assests/bottle.png" alt="" id="bottle" class="bottle">
+
+
+<!-- vid 2 -->
+<video id="remoteVideo" class="video" autoplay></video>
+
+
+
+
+        <div class="controls">
+            <button id="cameraButton" onclick="toggleMic()" style="background: none; border: none;">
+
+            <img src="/assests/mic-off.svg" alt="Microphone off" id="mic-on" class="border-cont">
+        </button>
+
+            <button id="cameraButton" onclick="toggleCamera()" style="background: none; border: none;">
+                <img src="/assests/cam-off.svg" alt="Camera off" id="cam-on" class="border-cont">
+        </button>
+
+            <button class="btn-spin" id="spinbtn">SPIN</button>
+        </div>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <div id="modalText"></div>
+            </div>
+          </div>
+        
+
+
+    </div>
+
+
+
+
+
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+
+    <script src="playscript.js"></script>
+</body>
+
+
+</body>
+
+</html>

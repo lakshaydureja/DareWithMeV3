@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dare With Me</title>
+    
+    <link rel="stylesheet" href="style.css" />
+    <!-- <script src="/socket.io/socket.io.js" ></script> -->
+    <!-- <script src="https://kit.fontawesome.com/c939d0e917.js"></script> -->
+    <!-- <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js" ></script> -->
+  
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Fredoka:wght@500&family=Lilita+One&family=Montserrat:wght@500&family=Pacifico&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+
+  </head>
+  
+  <body>
+
+<div class="nav">
+    
+    <button class="btn_red_sliding3 nav_btns" id="home" >Home</button>
+    <button class="btn_red_sliding3 nav_btns" id="rules">Rules</button>
+    <button class="btn_red_sliding3 nav_btns" id="aboutus">About Us</button>
+    <button class="btn_red_sliding3 nav_btns" id="share">Share</button>
+</div>
+   <div class="leftband">
+    <div class="l-content">
+        <p id="content1">Whom you wanna play with?</p>
+        <div id="btnbox">
+            <button class="btn_red_sliding btnbx" onclick="random1()" id="randombtn">Random</button>
+            <button class="btn_round_red btnbx" onclick="friends1()" id="friendsbtn">Friends</button>
+            <!-- dis1 -->
+            
+<!--            
+            <button class="btn_round_red2 btnbx dis1" onclick="NumSelect(this)" id="2" value="2">2</button>
+            <button class="btn_round_red2 btnbx dis1" onclick="NumSelect(this)" id="3" value="3">3</button>
+            <button class="btn_round_red2 btnbx dis1" onclick="NumSelect(this)" id="4" value="4">4</button>
+            <button class="btn_round_red2 btnbx dis1" onclick="NumSelect(this)" id="5" value="5">5</button> -->
+
+<!-- dis 2 -->
+<button class="btn_red_sliding2 btnbx dis2" onclick="createroom()" id="create-room">Create Room</button>
+ <button class="btn_round_red2 btnbx dis2" onclick="joinroom()" id="join-room">Join Room</button>
+
+ <input type="text" class="inputcode" id="inputcode" placeholder="Enter Roomcode">
+ <button class="btn_round_red2 btnbx dis3" onclick="joinroom2()" id="join-room2">Join Room</button>
+
+
+
+        </div>
+        <hr class="horizontal-line">
+        <p class="note">Max. 5 Players Can play Together</p>
+
+
+    </div>
+
+   </div>
+   <div class="rightband">
+    <div class="r-content">
+        <p id="head1">Welcome to</p>
+        <h1 id="head2">DareWithMe</h1>
+        <p id="desc">
+            "DarewithMe" brings the classic game of Truth and Dare to the virtual world, ensuring endless entertainment
+            and excitement. Gather your friends, join the game, and let the dares begin!
+        </p>
+        <p id="desc2">
+
+        </p>
+<img src="assests/tdimg.png" alt="" id="img1">
+    </div>
+   </div>
+
+
+
+
+
+
+        <script src="script.js"></script>
+  </body>
+  
+
+</body>
+</html>
