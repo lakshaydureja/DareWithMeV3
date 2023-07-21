@@ -43,34 +43,34 @@ navigator.mediaDevices
             // host: 'localhost',
             // port: 5001,
             // path: '/', 
-            // config: {
-            //     iceServers: [
-            //       // Add your STUN and TURN servers here
-            //       { urls: "stun:stun.relay.metered.ca:80", }, // Replace with your STUN server URL
-            //       {
-            //         urls: "turn:a.relay.metered.ca:443?transport=tcp",
-            //         username: "578c2e59bed97dca6a6d3768",
-            //         credential: "1u7rgzXK2xaw8VHp",
-            //       },
-            //     ],
-            //   },
+            config: {
+                iceServers: [
+                  // Add your STUN and TURN servers here
+                  { urls: "stun:stun.relay.metered.ca:80", }, // Replace with your STUN server URL
+                  {
+                    urls: "turn:a.relay.metered.ca:443?transport=tcp",
+                    username: "578c2e59bed97dca6a6d3768",
+                    credential: "1u7rgzXK2xaw8VHp",
+                  },
+                ],
+              },
           });
     }else{
         peer = new Peer({
             // host: 'localhost',
             // port: 5001,
             // path: '/', 
-        //     config: {
-        //         iceServers: [
-        //           // Add your STUN and TURN servers here
-        //           { urls: "stun:stun.relay.metered.ca:80",}, // Replace with your STUN server URL
-        //           {
-        //             urls: "turn:a.relay.metered.ca:443?transport=tcp",
-        // username: "578c2e59bed97dca6a6d3768",
-        // credential: "1u7rgzXK2xaw8VHp",
-        //           },
-        //         ],
-        //       },
+            config: {
+                iceServers: [
+                  // Add your STUN and TURN servers here
+                  { urls: "stun:stun.relay.metered.ca:80",}, // Replace with your STUN server URL
+                  {
+                    urls: "turn:a.relay.metered.ca:443?transport=tcp",
+        username: "578c2e59bed97dca6a6d3768",
+        credential: "1u7rgzXK2xaw8VHp",
+                  },
+                ],
+              },
           });
 
     }
