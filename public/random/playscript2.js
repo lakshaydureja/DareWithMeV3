@@ -36,8 +36,10 @@ socket.on('UserFound', (data) => {
 
     if (data.isfirst) {
         x=1;
+        go();
     } else {
         x=2;
+        go();
     }
 
 
@@ -170,6 +172,7 @@ function generateRandomAngle() {
 }
 
 //?----------------------------test-----------------
+function go(){
 if(x==1){
      // Create a PeerJS connection.
      const  peer = new Peer(GlobalRoomCode);
@@ -533,3 +536,4 @@ if(x==1){
 
 }else if (x==0){console.log("initial check");}
 else {console.log("heyyy boy");}
+}
