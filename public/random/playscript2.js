@@ -10,7 +10,7 @@ const remoteVideo = document.getElementById("remoteVideo");
 var angle = 0;
 var turn = 0;
 
-
+var x=0;
 var videoTrack;
 var audioTrack;
 var GlobalRoomCode;
@@ -35,11 +35,9 @@ socket.on('UserFound', (data) => {
 
 
     if (data.isfirst) {
-    User1();
-
+        x=1;
     } else {
-User2();
-
+        x=2;
     }
 
 
@@ -172,7 +170,7 @@ function generateRandomAngle() {
 }
 
 //?----------------------------test-----------------
-function User1(){
+if(x==1){
      // Create a PeerJS connection.
      const  peer = new Peer(GlobalRoomCode);
 
@@ -343,9 +341,7 @@ function User1(){
             
             });
 
-}
-
-function User2(){
+}else if(x==2){
     spinbtn.classList.add("after");
 
     const peer = new Peer();
@@ -535,4 +531,5 @@ function User2(){
     });
 
 
-}
+}else if (x==0){console.log("initial check");}
+else {console.log("heyyy boy");}
