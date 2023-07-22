@@ -26,7 +26,7 @@ let localStream;
 //         audioTrack = localVideo.srcObject.getAudioTracks()[0];
 
 //     });
-
+let peer;
 
 socket.on('UserFound', (data) => {
     console.log('User ID:', data.userId);
@@ -37,7 +37,7 @@ socket.on('UserFound', (data) => {
 
     if (data.isfirst) {
         // Create a PeerJS connection.
-        const peer = new Peer(GlobalRoomCode);
+       peer = new Peer(GlobalRoomCode);
 
 
         navigator.mediaDevices
@@ -60,7 +60,7 @@ socket.on('UserFound', (data) => {
 
         spinbtn.classList.add("after");
 
-        const peer = new Peer();
+         peer = new Peer();
 
         peer.on("open", function () {
             const conn = peer.connect(GlobalRoomCode);
