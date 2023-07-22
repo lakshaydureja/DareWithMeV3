@@ -11,186 +11,404 @@ var angle = 0;
 var turn = 0;
 
 
-let videoTrack;    //this is access to  own vedio
-let audioTrack;   //own audio
-let GlobalRoomCode; //this is room code
-let localStream;
+var videoTrack;
+var audioTrack;
+var GlobalRoomCode;
 //To initilaize our vedio.
-navigator.mediaDevices
-    .getUserMedia({ video: true, audio: true })
-    .then(function (stream) {
-        localStream = stream;
-        localVideo.srcObject = stream;
-        videoTrack = localVideo.srcObject.getVideoTracks()[0];
-        audioTrack = localVideo.srcObject.getAudioTracks()[0];
+let localStream;
+// navigator.mediaDevices
+//     .getUserMedia({ video: true, audio: true })
+//     .then(function (stream) {
 
-    });
+//         localStream = stream;
+//         localVideo.srcObject = localStream;
+//         videoTrack = localVideo.srcObject.getVideoTracks()[0];
+//         audioTrack = localVideo.srcObject.getAudioTracks()[0];
 
-//? -------------peer new code-----------
-    let peer;
-    let peerConnection;
+//     });
 
-
-
-
-   // Function to set up the PeerJS connection
-   function initializePeer(isUser1,roomId) {
-
-    // If the current user is user 1, use the provided room ID as the Peer ID
-    if (isUser1) {
-        
-        peer = new Peer(roomId,{
-            // host: 'localhost',
-            // port: 5001,
-            // path: '/', 
-            config: {
-                iceServers: [
-                  // Add your STUN and TURN servers here
-                  { urls: "stun:stun.relay.metered.ca:80", }, // Replace with your STUN server URL
-                  {
-                    urls: "turn:a.relay.metered.ca:443?transport=tcp",
-                    username: "578c2e59bed97dca6a6d3768",
-                    credential: "1u7rgzXK2xaw8VHp",
-                  },
-                ],
-              },
-          });
-    }else{
-        peer = new Peer({
-            // host: 'localhost',
-            // port: 5001,
-            // path: '/', 
-            config: {
-                iceServers: [
-                  // Add your STUN and TURN servers here
-                  { urls: "stun:stun.relay.metered.ca:80",}, // Replace with your STUN server URL
-                  {
-                    urls: "turn:a.relay.metered.ca:443?transport=tcp",
-        username: "578c2e59bed97dca6a6d3768",
-        credential: "1u7rgzXK2xaw8VHp",
-                  },
-                ],
-              },
-          });
-
-    }
-
-
-    
-
-    peer.on("open", () => {
-        console.log("Your peer ID: " + peer.id);
-        
-        if (!isUser1) {
-            // Connect to user 1 if the current user is user 2
-            setTimeout(() => {
-                connectToUser1(roomId);
-              }, 2000);
-
-        }
-
-
-    });
-
-    peer.on("call", (incomingCall) => {
-        // Answer incoming call
-        console.log("call agyi");
-        // incomingCall.answer(localStream);
-
-        // // Set up the remote video stream when the call is answered
-        // incomingCall.on("stream", (stream) => {
-        //     remoteVideo.srcObject = stream;
-        //     remoteStream = stream;
-        // });
-    });
-
-    // Error handling for the PeerJS connection
-    peer.on("error", (error) => {
-        console.error("PeerJS error:", error);
-    });
-
-}
-
-   // Function to start the video call
-   function startCall(isUser1,roomId) {
-   
-            
-
-        
-            initializePeer(isUser1,roomId);
-            // if (!isUser1) {
-            //     // Connect to user 1 if the current user is user 2
-            //     connectToUser1(roomId);
-            // }
-       
-}
-
- // Function to connect to user 1 (host)
- function connectToUser1(roomId) {
-    // Connect to the remote user with the same room ID (user 1)
-    var call = peer.call(roomId, localStream);
-
-    call.on("stream", (remoteStream) => {
-        remoteVideo.srcObject = remoteStream;
-    });
-
-    call.on("error", (error) => {
-        console.error("Call error:", error);
-    });
-}
-
-
-  // Function to end the video call
-  function endCall() {
-    if (peer) {
-        peer.destroy();
-    }
-
-    if (localStream) {
-        localStream.getTracks().forEach((track) => track.stop());
-    }
-
-    if (remoteStream) {
-        remoteStream.getTracks().forEach((track) => track.stop());
-    }
-
-    localVideo.srcObject = null;
-    remoteVideo.srcObject = null;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//?------------------------------------------
 
 socket.on('UserFound', (data) => {
     console.log('User ID:', data.userId);
     console.log('isfirst:', data.isfirst);
     hideLoadingText();
     GlobalRoomCode = data.userId;
-    startCall(data.isfirst,GlobalRoomCode);
+
+
+    if (data.isfirst) {
+        // Create a PeerJS connection.
+        const peer = new Peer(GlobalRoomCode);
+
+
+        navigator.mediaDevices
+            .getUserMedia({ video: true, audio: true })
+            .then(function (stream) {
+
+                localStream = stream;
+                localVideo.srcObject = localStream;
+                videoTrack = localVideo.srcObject.getVideoTracks()[0];
+                audioTrack = localVideo.srcObject.getAudioTracks()[0];
+
+            });
+
+        peer.on("open", function () {
+            console.log("Room created with user ID:", GlobalRoomCode);
+
+            peer.on("connection", function (conn) {
+
+                conn.on("open", function () {
+                    console.log("Connection established with", conn.peer);
+
+                    peer.on("call", function (call) {
+                        // Answer the incoming call
+                        call.answer(localStream);
+
+                        // Display remote video stream
+                        const remoteVideo = document.getElementById("remoteVideo");
+                        call.on("stream", function (remoteStream) {
+                            remoteVideo.srcObject = remoteStream;
+                        });
+                    });
+
+
+
+
+
+                    // Send a message
+                    const sendMessage = function (message) {
+                        conn.send({ type: "message", message: message });
+                    };
+
+                    // Send angle and turn data
+                    const sendAngleTurnData = function (angle, turn) {
+                        conn.send({ type: "angleTurnData", angle: angle, turn: turn });
+                    };
+
+                    // Handle data received from the other peer
+                    conn.on("data", function (data) {
+                        // Handle received data
+                        if (data.type === "message") {
+                            // Handle message
+                            const receivedMessage = data.message;
+                            recieveMsg(receivedMessage);
+                            console.log("Received message:", receivedMessage);
+
+                            // Send response back to the other peer
+                            // conn.send({ type: "response", message: "Response from the receiver" });
+                        } else if (data.type === "angleTurnData") {
+                            // Handle angle and turn data
+                            const receivedAngle = data.angle;
+                            const receivedTurn = data.turn;
+                            console.log("Received angle:", receivedAngle);
+                            console.log("Received turn:", receivedTurn);
+
+                            spin(receivedAngle);
+                            turn = receivedTurn;
+                            remoteVideo.classList.remove("turn");
+                            localVideo.classList.add("turn");
+
+                            // Send response back to the other peer
+                            // conn.send({ type: "response", message: "Response from the receiver" });
+                        }
+                    });
+
+
+                    //message part
+                    const messageList = document.getElementById('message-list');
+                    const messageInput = document.getElementById('msg');
+                    const sendButton = document.getElementById('send-button');
+
+
+
+                    //add and send message 
+                    function addMessage() {
+                        const messageText = messageInput.value;
+
+                        if (messageText.trim() === '') {
+                            return; // Ignore empty messages
+                        }
+
+                        const messageElement = document.createElement('li');
+                        messageElement.textContent = messageText;
+
+                        messageElement.classList.add('sender');
+
+                        sendMessage(messageText);
+
+
+                        messageList.appendChild(messageElement);
+
+                        messageInput.value = '';
+                        scrollToBottom(); // Scroll to bottom after appending the message
+
+                    }
+                    //recive msg and add it
+
+                    function recieveMsg(msgx) {
+                        const messageElement = document.createElement('li');
+                        messageElement.textContent = msgx;
+                        messageElement.classList.add('receiver');
+                        messageList.appendChild(messageElement);
+                        scrollToBottom();
+                    }
+
+
+                    function scrollToBottom() {
+                        var messageScreen = document.querySelector('.message-screen');
+                        messageScreen.scrollTop = messageScreen.scrollHeight;
+                    }
+
+
+
+                    sendButton.addEventListener('click', () => {
+                        addMessage();
+
+                    });
+
+                    messageInput.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+
+                            addMessage();
+                        }
+                    });
+
+
+
+
+                    // angle turn part
+                    spinbtn.addEventListener("click", function () {
+
+
+                        if (turn == 0) {
+                            angle = 10 * 360 + generateRandomAngle();
+                            console.log("angle2", angle);
+                            sendAngleTurnData(angle, 1);
+                            spin(angle);
+                            turn = 1;
+                            localVideo.classList.remove("turn");
+                            remoteVideo.classList.add("turn");
+
+                        } else if (turn == 1) {
+                            showModalPopup("Wait!!!👀 It's not your Turn");
+
+                            console.log("its not your turn");
+                        } else {
+                            console.log("Some Error");
+                        }
+
+
+                    });
+                });
+
+
+            });
+
+
+        });
+
+
+
+    } else {
+
+
+        spinbtn.classList.add("after");
+
+        const peer = new Peer();
+
+        peer.on("open", function () {
+            const conn = peer.connect(GlobalRoomCode);
+
+
+            conn.on("open", function () {
+                console.log("Connected to room", GlobalRoomCode);
+
+                // Initiate video call
+                navigator.mediaDevices
+                    .getUserMedia({ video: true, audio: true })
+                    .then(function (stream) {
+                        localVideo.srcObject = stream;
+                        videoTrack = localVideo.srcObject.getVideoTracks()[0];
+                        audioTrack = localVideo.srcObject.getAudioTracks()[0];
+
+                        const call = peer.call(GlobalRoomCode, stream);
+
+                        // Answer the incoming call
+                        call.answer(stream);
+
+                        // Display remote video stream
+                        const remoteVideo = document.getElementById("remoteVideo");
+                        call.on("stream", function (remoteStream) {
+                            remoteVideo.srcObject = remoteStream;
+                        });
+                    })
+                    .catch(function (error) {
+                        console.error("Error accessing media devices:", error);
+                    });
+
+
+
+
+
+                // Send a message
+                const sendMessage = function (message) {
+                    conn.send({ type: "message", message: message });
+                };
+
+                // Send angle and turn data
+                const sendAngleTurnData = function (angle, turn) {
+                    conn.send({ type: "angleTurnData", angle: angle, turn: turn });
+                };
+
+                // Handle data received from the other peer
+                conn.on("data", function (data) {
+                    // Handle received data
+                    if (data.type === "message") {
+                        // Handle message
+                        const receivedMessage = data.message;
+                        recieveMsg(receivedMessage);
+
+                        console.log("Received message:", receivedMessage);
+
+                        // // Send response back to the other peer
+                        // conn.send({ type: "response", message: "Response from the receiver" });
+                    } else if (data.type === "angleTurnData") {
+                        // Handle angle and turn data
+                        const receivedAngle = data.angle;
+                        const receivedTurn = data.turn;
+                        console.log("Received angle:", receivedAngle);
+                        console.log("Received turn:", receivedTurn);
+
+                        spin(receivedAngle);
+                        turn = receivedTurn;
+                        localVideo.classList.remove("turn");
+                        remoteVideo.classList.add("turn");
+
+
+                        // Send response back to the other peer
+                        // conn.send({ type: "response", message: "Response from the receiver" });
+                    }
+                });
+
+
+
+
+
+
+                //message part
+                const messageList = document.getElementById('message-list');
+                const messageInput = document.getElementById('msg');
+                const sendButton = document.getElementById('send-button');
+
+
+
+                //add and send message 
+                function addMessage() {
+                    const messageText = messageInput.value;
+
+                    if (messageText.trim() === '') {
+                        return; // Ignore empty messages
+                    }
+
+                    const messageElement = document.createElement('li');
+                    messageElement.textContent = messageText;
+
+                    messageElement.classList.add('sender');
+
+                    sendMessage(messageText);
+
+
+                    messageList.appendChild(messageElement);
+
+                    messageInput.value = '';
+                    scrollToBottom(); // Scroll to bottom after appending the message
+
+                }
+                //recive msg and add it
+
+                function recieveMsg(msgx) {
+                    const messageElement = document.createElement('li');
+                    messageElement.textContent = msgx;
+                    messageElement.classList.add('receiver');
+                    messageList.appendChild(messageElement);
+                    scrollToBottom();
+                }
+
+
+                function scrollToBottom() {
+                    var messageScreen = document.querySelector('.message-screen');
+                    messageScreen.scrollTop = messageScreen.scrollHeight;
+                }
+
+
+
+                sendButton.addEventListener('click', () => {
+                    addMessage();
+
+                });
+
+                messageInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+
+                        addMessage();
+                    }
+                });
+
+
+
+
+
+
+
+
+
+                // Example usage
+                spinbtn.addEventListener("click", function () {
+
+                    if (turn == 0) {
+
+
+                        showModalPopup("Wait!!!👀 It's not your Turn");
+
+                        console.log("its not your turn");
+
+
+
+                    } else if (turn == 1) {
+
+                        angle = 12 * 360 + generateRandomAngle();
+                        console.log("angle1", angle);
+                        sendAngleTurnData(angle, 0);
+                        spin(angle);
+                        turn = 0;
+                        remoteVideo.classList.remove("turn");
+                        localVideo.classList.add("turn");
+
+
+
+                    } else {
+                        console.log("Some Error");
+                    }
+
+
+                });
+
+
+            });
+
+
+
+        });
+
+
+
+
+
+    }
+
 
 
 });
-//?-------------------------------------------
+
 socket.on('empty', (stat) => {
     console.log(stat);
     //on user not present then we are already showing waiting.
@@ -315,11 +533,3 @@ function generateRandomAngle() {
 
     return finalAngle;
 }
-
-
-
-
-
-
-//? test
-
