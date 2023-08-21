@@ -146,7 +146,7 @@ function sendJoinRoomReq(roomCode) {
     .then(data => {
       if (data.exists) {
         
-        const roomUrl = `${site}${roomCode}`;
+        const roomUrl = `${site}/${roomCode}`;
   window.location.href = roomUrl;
         console.log('Room code exists on the server');
       } else {
